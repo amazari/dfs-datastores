@@ -6,7 +6,7 @@ import com.backtype.support.Utils;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TimeSliceStructure<T> implements PailStructure<T> {
+public abstract class TimeSliceStructure<T> extends PailStructure<T> {
 
     public final boolean isValidTarget(String... dirs) {
         if(dirs.length < 2) {

@@ -3,7 +3,7 @@ package com.backtype.hadoop.pail;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestStructure implements PailStructure<String> {
+public class TestStructure extends PailStructure<String> {
 
     public boolean isValidTarget(String... dirs) {
         if (dirs.length == 0) {

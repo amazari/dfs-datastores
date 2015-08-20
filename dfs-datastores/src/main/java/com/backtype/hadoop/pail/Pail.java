@@ -172,7 +172,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
                 if(!spec.equals(existing))
                     throw new IllegalArgumentException("Specs do not match " + spec.toString() + ", " + existing.toString());
             } else if(spec.getStructure()!=null) {
-                if(existing.getStructure()==null || !spec.getStructure().getClass().equals(existing.getStructure().getClass())) {
+                if(existing.getStructure()==null || !spec.getStructure().getSerializationClassName().equals(existing.getStructure().getSerializationClassName())) {
                     throw new IllegalArgumentException("Specs do not match " + spec.toString() + ", " + existing.toString());
                 }
             }

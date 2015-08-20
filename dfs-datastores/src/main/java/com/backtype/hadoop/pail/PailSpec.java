@@ -1,5 +1,6 @@
 package com.backtype.hadoop.pail;
 
+import com.google.common.base.Function;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -36,6 +37,12 @@ public class PailSpec implements Writable, Serializable {
         this(name, args, null);
     }
 
+    public <U, T>PailSpec(String name, Map<String, Object> args, PailStructure<T> structure,
+                    Function<U, T> preSerialisation,
+                    Function<T, U> postDeserialization) {
+        this(name, args, new TransparentConvertionPailStructure(structure, preSerialisation, postDeserialization));
+    }
+
     public PailSpec(String name, Map<String, Object> args, PailStructure structure) {
         this.name = name;
         this.args = args == null ? null : new HashMap(args);
@@ -67,7 +74,7 @@ public class PailSpec implements Writable, Serializable {
         PailSpec ps = (PailSpec) obj;
         return name.equals(ps.name) &&
                args.equals(ps.args) &&
-               getStructure().getClass().equals(ps.getStructure().getClass());
+               getStructure().getSerializationClassName().equals(ps.getStructure().getSerializationClassName());
     }
 
     @Override
@@ -128,7 +135,7 @@ public class PailSpec implements Writable, Serializable {
         format.put("format", name);
         format.put("args", args);
         if(structure!=null) {
-            format.put("structure", structure.getClass().getName());
+            format.put("structure", structure.getSerializationClassName());
         }
         return format;
     }

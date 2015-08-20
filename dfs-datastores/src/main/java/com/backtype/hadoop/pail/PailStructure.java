@@ -6,10 +6,14 @@ import java.util.List;
 /**
  * Shouldn't take any args
  */
-public interface PailStructure<T> extends Serializable {
-    public boolean isValidTarget(String... dirs);
-    public T deserialize(byte[] serialized);
-    public byte[] serialize(T object);
-    public List<String> getTarget(T object);
-    public Class getType();
+public abstract class PailStructure<T> implements Serializable {
+    abstract public boolean isValidTarget(String... dirs);
+    abstract public T deserialize(byte[] serialized);
+    abstract public byte[] serialize(T object);
+    abstract public List<String> getTarget(T object);
+    abstract public Class getType();
+    public String getSerializationClassName() {
+        return getClass().getName();
+    }
 }
+

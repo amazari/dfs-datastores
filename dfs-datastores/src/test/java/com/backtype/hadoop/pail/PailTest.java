@@ -15,6 +15,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import static com.backtype.support.TestUtils.*;
 
+import static com.backtype.hadoop.pail.PailOpsTest.wrapStructureWithIdTrans;
 
 public class PailTest extends TestCase {
     FileSystem local;
@@ -211,17 +212,17 @@ public class PailTest extends TestCase {
         assertTrue(pail.isEmpty());
     }
 
-    public void testStructureConstructor() throws Exception {
+    public void testStructureConstructor(boolean wrapStructure) throws Exception {
         String path = getTmpPath(local, "pail");
-        Pail p = Pail.create(local, path, new TestStructure());
+        Pail p = Pail.create(local, path, wrapStructureWithIdTrans(new TestStructure(), wrapStructure));
         PailSpec spec = p.getSpec();
         assertNotNull(spec.getName());
-        assertEquals(TestStructure.class, spec.getStructure().getClass());
+        assertEquals(TestStructure.class, spec.getStructure().getSerializationClassName());
         //shouldn't throw exceptions...
-        Pail.create(local, path, new TestStructure(), false);
+        Pail.create(local, path, wrapStructureWithIdTrans(new TestStructure(), wrapStructure), false);
         Pail.create(local, path, false);
         try {
-            Pail.create(local, path, new DefaultPailStructure(), false);
+            Pail.create(local, path, wrapStructureWithIdTrans(new DefaultPailStructure(), wrapStructure), false);
             fail("should throw exception");
         } catch(IllegalArgumentException e) {
 
@@ -229,7 +230,7 @@ public class PailTest extends TestCase {
         path = getTmpPath(local, "pail");
         Pail.create(local, path);
         try {
-            Pail.create(local, path, new TestStructure(), false);
+            Pail.create(local, path, wrapStructureWithIdTrans(new TestStructure(), wrapStructure), false);
             fail("should throw exception");
         } catch(IllegalArgumentException e) {
 
@@ -248,9 +249,9 @@ public class PailTest extends TestCase {
         return ret;
     }
 
-    public void testStructured() throws Exception {
+    public void testStructured(boolean wrapStructure) throws Exception {
         String path = getTmpPath(local, "pail");
-        Pail<String> pail = Pail.create(local, path, PailFormatFactory.getDefaultCopy().setStructure(new TestStructure()));
+        Pail<String> pail = Pail.create(local, path, PailFormatFactory.getDefaultCopy().setStructure(wrapStructureWithIdTrans(new TestStructure(), wrapStructure)));
         Pail<String>.TypedRecordOutputStream os = pail.openWrite();
         os.writeObject("a1");
         os.writeObject("b1");
